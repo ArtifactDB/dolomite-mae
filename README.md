@@ -28,21 +28,41 @@ which can be loaded in a new R/Python environment for cross-language analyses.
 Let's mock up a `MultiAssayExperiment`:
 
 ```python
-import summarizedexperiment
+from multiassayexperiment import MultiAssayExperiment
+from singlecellexperiment import SingleCellExperiment
+from summarizedexperiment import SummarizedExperiment
 import biocframe
 import numpy
 
-se = summarizedexperiment.SummarizedExperiment(
-    assays={ "counts": numpy.random.rand(1000, 200) },
-    row_data=biocframe.BiocFrame(
-        { "foo": numpy.random.rand(1000) }, 
-        row_names = ["gene" + str(i) for i in range(1000)]
-    ),
-    column_data=biocframe.BiocFrame(
-        { "whee": numpy.random.rand(200) },
-        row_names = ["cell" + str(i) for i in range(200)]
-    )
+x = numpy.random.rand(1000, 200)
+x2 = (numpy.random.rand(1000, 200) * 10).astype(numpy.int32)
+
+sce = SingleCellExperiment(
+     {"logcounts": x, "counts": x2},
+     main_experiment_name="aaron's secret modality",
+     row_data=biocframe.BiocFrame(
+          {"foo": numpy.random.rand(1000), "bar": numpy.random.rand(1000)},
+          row_names=["gene_sce_" + str(i) for i in range(1000)],
+     ),
+     column_data=biocframe.BiocFrame(
+          {"whee": numpy.random.rand(200), "stuff": numpy.random.rand(200)},
+          row_names=["cell_sce" + str(i) for i in range(200)],
+     ),
 )
+
+se = SummarizedExperiment(
+     {"counts": numpy.random.rand(100, 200)},
+     row_data=biocframe.BiocFrame(
+          {"foo": numpy.random.rand(100), "bar": numpy.random.rand(100)},
+          row_names=["gene_se_" + str(i) for i in range(100)],
+     ),
+     column_data=biocframe.BiocFrame(
+          {"whee": numpy.random.rand(200), "stuff": numpy.random.rand(200)},
+          row_names=["cell_se" + str(i) for i in range(200)],
+     ),
+)
+
+mae = MultiAssayExperiment(experiments={"jay_expt": sce, "aarons_expt": se})
 ```
 
 Now we can save it:
@@ -63,8 +83,4 @@ And load it again, e,g., in a new session:
 from dolomite_base import read_object
 
 roundtrip = read_object(path)
-## Class SummarizedExperiment with 1000 features and 200 samples
-##   assays: ['counts']
-##   row_data: ['foo']
-##   column_data: ['whee']
 ```
