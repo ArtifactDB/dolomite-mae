@@ -301,7 +301,7 @@ intersphinx_mapping = {
     "setuptools": ("https://setuptools.pypa.io/en/stable/", None),
     "pyscaffold": ("https://pyscaffold.org/en/stable", None),
     "dolomite_base": ("https://artifactdb.github.io/dolomite-base", None),
-    "summarizedexperiment": ("https://biocpy.github.io/summarizedexperiment", None),
+    "multiassayexperiment": ("https://biocpy.github.io/MultiAssayExperiment/", None),
 }
 
 print(f"loading configurations for {project} {version} ...", file=sys.stderr)
