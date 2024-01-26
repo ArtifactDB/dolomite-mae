@@ -14,3 +14,6 @@ except PackageNotFoundError:  # pragma: no cover
     __version__ = "unknown"
 finally:
     del version, PackageNotFoundError
+
+from .read_multi_assay_experiment import read_multi_assay_experiment
+from .save_multi_assay_experiment import save_multi_assay_experiment
