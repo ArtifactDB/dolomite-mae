@@ -118,7 +118,10 @@ def test_stage_mae_complex():
     )
 
     tsce = SingleCellExperiment(
-        assays={"counts": counts}, row_data=df_gr, column_data=column_data_sce
+        assays={"counts": counts},
+        row_data=df_gr,
+        column_data=column_data_sce,
+        row_ranges=gr,
     )
 
     tse2 = SummarizedExperiment(
