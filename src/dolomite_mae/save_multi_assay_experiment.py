@@ -36,7 +36,8 @@ def save_multi_assay_experiment(
             Further arguments to pass to the ``save_object`` method for the
             assays.
 
-        kwargs: Further arguments, ignored.
+        kwargs: 
+            Further arguments.
 
     Returns:
         ``x`` is saved to path.
@@ -49,14 +50,12 @@ def save_multi_assay_experiment(
     if assay_args is None:
         assay_args = {}
 
-    with open(os.path.join(path, "OBJECT"), "w", encoding="utf-8") as handle:
-        handle.write(
-            '{ "type": "multi_sample_dataset", "multi_sample_dataset": { "version": "1.0" } }'
-        )
+    _info = {"multi_sample_dataset": {"version": "1.0"}}
+    dl.save_object_file(path, "multi_sample_dataset", _info)
 
     # sample/column data
     _sample_path = os.path.join(path, "sample_data")
-    dl.save_object(x.get_column_data(), _sample_path, **data_frame_args)
+    dl.alt_save_object(x.get_column_data(), _sample_path, **data_frame_args, **kwargs)
 
     # save alt expts.
     _expt_names = x.get_experiment_names()
@@ -70,11 +69,12 @@ def save_multi_assay_experiment(
         for _aidx, _aname in enumerate(_expt_names):
             _expt_save_path = os.path.join(_expt_path, str(_aidx))
             try:
-                dl.save_object(
+                dl.alt_save_object(
                     x.experiment(_aname),
                     path=_expt_save_path,
                     data_frame_args=data_frame_args,
                     assay_args=assay_args,
+                    **kwargs,
                 )
             except Exception as ex:
                 raise RuntimeError(
@@ -125,6 +125,6 @@ def save_multi_assay_experiment(
 
     _meta = x.get_metadata()
     if _meta is not None and len(_meta) > 0:
-        dl.save_object(_meta, path=os.path.join(path, "other_data"))
+        dl.alt_save_object(_meta, path=os.path.join(path, "other_data"), **kwargs)
 
     return

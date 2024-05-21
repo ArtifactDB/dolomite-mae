@@ -7,9 +7,9 @@ from biocframe import BiocFrame
 from dolomite_base.read_object import read_object_registry
 from multiassayexperiment import MultiAssayExperiment
 
-read_object_registry[
-    "multi_sample_dataset"
-] = "dolomite_mae.read_multi_assay_experiment"
+read_object_registry["multi_sample_dataset"] = (
+    "dolomite_mae.read_multi_assay_experiment"
+)
 
 
 def read_multi_assay_experiment(
@@ -30,7 +30,7 @@ def read_multi_assay_experiment(
             Metadata for the object.
 
         kwargs:
-            Further arguments, ignored.
+            Further arguments.
 
     Returns:
         A
@@ -41,7 +41,7 @@ def read_multi_assay_experiment(
     _sample_path = os.path.join(path, "sample_data")
     _sample_data = None
     if os.path.exists(_sample_path):
-        _sample_data = dl.read_object(_sample_path)
+        _sample_data = dl.alt_read_object(_sample_path, **kwargs)
 
     if _sample_data is None:
         raise RuntimeError("Cannot read 'sample_data'.")
@@ -70,7 +70,7 @@ def read_multi_assay_experiment(
                 _expt_read_path = os.path.join(_expts_path, str(_aidx))
 
                 try:
-                    _expts[_aname] = dl.read_object(_expt_read_path)
+                    _expts[_aname] = dl.alt_read_object(_expt_read_path, **kwargs)
                 except Exception as ex:
                     raise RuntimeError(
                         f"failed to load experiment '{_aname}' from '{path}'; "
@@ -95,7 +95,7 @@ def read_multi_assay_experiment(
 
     _meta_path = os.path.join(path, "other_data")
     if os.path.exists(_meta_path):
-        _meta = dl.read_object(_meta_path)
+        _meta = dl.alt_read_object(_meta_path, **kwargs)
         mae = mae.set_metadata(_meta.as_dict())
 
     return mae
